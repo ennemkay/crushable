@@ -1,0 +1,41 @@
+{
+  "name": "crushable",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "app:start": "scripts/app.sh start",
+    "app:stop": "scripts/app.sh stop",
+    "app:restart": "scripts/app.sh restart",
+    "app:status": "scripts/app.sh status",
+    "app:logs": "scripts/app.sh logs",
+    "app:docker": "docker compose up --build app",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "prisma:generate": "prisma generate",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "db:smoke": "prisma generate && node scripts/db-smoke-check.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.25.0",
+    "eslint-config-next": "^15.3.0",
+    "postcss": "^8.5.0",
+    "prisma": "^6.19.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.0"
+  }
+}

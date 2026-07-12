@@ -1,0 +1,422 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  LIMITED
+  SUSPENDED
+  SOFT_DELETED
+}
+
+enum PlanKey {
+  FREE
+  PAID
+}
+
+enum ProfileVisibilityStatus {
+  DRAFT
+  ACTIVE
+  HIDDEN
+  DISABLED
+}
+
+enum LinkStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum CrushStatus {
+  ACTIVE
+  DELETED
+  MATCHED
+}
+
+enum Sex {
+  FEMALE
+  MALE
+  OTHER
+}
+
+enum AgeDecade {
+  AGE_18_29
+  AGE_30_39
+  AGE_40_49
+  AGE_50_59
+  AGE_60_PLUS
+}
+
+enum ConnectionStatus {
+  ACTIVE
+  BLOCKED
+  CLOSED
+  ADMIN_DISABLED
+}
+
+enum ConnectionSourceType {
+  PUBLIC_PROFILE_CONTACT
+  CRUSH_MATCH
+  OTHER_MATCH
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  DISMISSED
+  ACTION_TAKEN
+}
+
+enum SubscriptionStatus {
+  NONE
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model User {
+  id                        String                  @id @default(uuid())
+  email                     String                  @unique
+  role                      UserRole                @default(USER)
+  status                    UserStatus              @default(ACTIVE)
+  plan                      PlanKey                 @default(FREE)
+  subscriptionStatus        SubscriptionStatus      @default(NONE)
+  paymentProviderCustomerId String?
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
+  deletedAt                 DateTime?
+
+  profile                   Profile?
+  emailLinkTokens           EmailLinkToken[]
+  authSessions              AuthSession[]
+  subscriptions             Subscription[]
+  usageCounters             UsageCounter[]
+  billingIdentities         BillingIdentity[]
+  billingIdentityChanges    BillingIdentityChange[]
+  submittedCrushes          Crush[]                 @relation("SubmittedCrushes")
+  blocksCreated             Block[]                 @relation("BlocksCreated")
+  blocksReceived            Block[]                 @relation("BlocksReceived")
+  reportsCreated            Report[]                @relation("ReportsCreated")
+  suspensions               Suspension[]
+  adminSuspensionsCreated   Suspension[]            @relation("AdminSuspensionsCreated")
+  adminAuditLogs            AdminAuditLog[]         @relation("AdminAuditLogs")
+  profileActivities         ProfileActivity[]       @relation("ProfileActivityActor")
+  connectionParticipants    ConnectionParticipant[]
+}
+
+model EmailLinkToken {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  purpose    String
+  email      String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@index([email, purpose])
+  @@index([expiresAt])
+}
+
+model AuthSession {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Profile {
+  id                            String                  @id @default(uuid())
+  userId                        String                  @unique
+  emailAddress                  String
+  username                      String                  @unique
+  displayName                   String
+  description                   String
+  zipCode                       String
+  ageDecade                     AgeDecade
+  sex                           Sex
+  publicFieldVisibilitySettings Json                    @default("{}")
+  visibilityStatus              ProfileVisibilityStatus @default(DRAFT)
+  completionStatus              String                  @default("incomplete")
+  createdAt                     DateTime                @default(now())
+  updatedAt                     DateTime                @updatedAt
+  deletedAt                     DateTime?
+
+  user                          User                    @relation(fields: [userId], references: [id])
+  photos                        ProfilePhoto[]
+  links                         ProfileLink[]
+  activities                    ProfileActivity[]
+  reports                       Report[]
+}
+
+model ProfilePhoto {
+  id         String   @id @default(uuid())
+  profileId  String
+  storageKey String
+  position   Int
+  status     String   @default("active")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+
+  profile    Profile  @relation(fields: [profileId], references: [id])
+
+  @@unique([profileId, position])
+}
+
+model ProfileLink {
+  id                  String     @id @default(uuid())
+  profileId           String
+  token               String     @unique
+  usernamePathSegment String
+  label               String
+  status              LinkStatus @default(ACTIVE)
+  createdAt           DateTime   @default(now())
+  revokedAt           DateTime?
+
+  profile             Profile    @relation(fields: [profileId], references: [id])
+}
+
+model Subscription {
+  id                     String             @id @default(uuid())
+  userId                 String
+  provider               String
+  providerCustomerId     String
+  providerSubscriptionId String
+  status                 SubscriptionStatus
+  plan                   PlanKey
+  currentPeriodStart     DateTime?
+  currentPeriodEnd       DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  canceledAt             DateTime?
+
+  user                   User               @relation(fields: [userId], references: [id])
+}
+
+model UsageCounter {
+  id         String   @id @default(uuid())
+  userId     String
+  actionType String
+  period     String
+  periodStart DateTime
+  count      Int      @default(0)
+  limit      Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, actionType, period, periodStart])
+}
+
+model BillingIdentity {
+  id                    String   @id @default(uuid())
+  userId                String
+  provider              String
+  providerReferenceId   String
+  normalizedFirstName   String
+  normalizedLastName    String
+  postalCode            String
+  postalCodeCheckStatus String?
+  verificationStatus    String   @default("attested")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  lastChangedAt         DateTime @default(now())
+
+  user                  User     @relation(fields: [userId], references: [id])
+}
+
+model BillingIdentityChange {
+  id                            String   @id @default(uuid())
+  userId                        String
+  previousNormalizedBillingName String
+  previousPostalCode            String
+  newNormalizedBillingName      String
+  newPostalCode                 String
+  providerReferenceId           String
+  changedAt                     DateTime @default(now())
+
+  user                          User     @relation(fields: [userId], references: [id])
+}
+
+model Crush {
+  id                            String      @id @default(uuid())
+  submittedByUserId             String
+  optionalMatchedTargetUserId   String?
+  firstNameVariants             String[]
+  normalizedFirstNameVariants   String[]
+  normalizedFirstNameVariantKey String
+  targetFullLastName            String
+  normalizedTargetFullLastName  String
+  targetCity                    String
+  normalizedTargetCity          String
+  ageDecade                     AgeDecade
+  targetSex                     Sex
+  hairColor                     String?
+  eyeColor                      String?
+  controlledContext             String?
+  status                        CrushStatus @default(ACTIVE)
+  createdAt                     DateTime    @default(now())
+  updatedAt                     DateTime    @updatedAt
+  deletedAt                     DateTime?
+
+  submittedBy                   User        @relation("SubmittedCrushes", fields: [submittedByUserId], references: [id])
+
+  @@index([submittedByUserId, normalizedTargetFullLastName, normalizedTargetCity, ageDecade, targetSex])
+}
+
+model Connection {
+  id                        String                  @id @default(uuid())
+  sourceType                ConnectionSourceType
+  sourceId                  String
+  status                    ConnectionStatus        @default(ACTIVE)
+  relayAddress              String                  @unique
+  providerThreadReferenceId String?
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
+  closedAt                  DateTime?
+  closedByUserId            String?
+
+  participants              ConnectionParticipant[]
+  contactAttempts           ContactAttempt[]
+  emailRelayEvents          EmailRelayEvent[]
+}
+
+model ConnectionParticipant {
+  id           String     @id @default(uuid())
+  connectionId String
+  userId       String
+  createdAt    DateTime   @default(now())
+
+  connection   Connection @relation(fields: [connectionId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@unique([connectionId, userId])
+}
+
+model ContactAttempt {
+  id              String   @id @default(uuid())
+  connectionId    String?
+  senderUserId    String
+  recipientUserId String
+  sourceType      String
+  sourceId        String
+  status          String   @default("pending")
+  messageMetadata Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  connection      Connection? @relation(fields: [connectionId], references: [id])
+}
+
+model EmailRelayEvent {
+  id                String     @id @default(uuid())
+  connectionId      String
+  provider          String
+  providerMessageId String?
+  direction         String
+  eventType         String
+  deliveryStatus    String?
+  metadata          Json       @default("{}")
+  createdAt         DateTime   @default(now())
+
+  connection        Connection @relation(fields: [connectionId], references: [id])
+}
+
+model Block {
+  id             String   @id @default(uuid())
+  blockerUserId  String
+  blockedUserId  String
+  reasonCategory String?
+  createdAt      DateTime @default(now())
+
+  blocker        User     @relation("BlocksCreated", fields: [blockerUserId], references: [id])
+  blocked        User     @relation("BlocksReceived", fields: [blockedUserId], references: [id])
+
+  @@unique([blockerUserId, blockedUserId])
+}
+
+model Report {
+  id                    String       @id @default(uuid())
+  reporterUserId        String
+  reportedProfileId     String
+  category              String
+  details               String?
+  status                ReportStatus @default(OPEN)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  reviewedByAdminUserId String?
+  reviewedAt            DateTime?
+
+  reporter              User         @relation("ReportsCreated", fields: [reporterUserId], references: [id])
+  reportedProfile       Profile      @relation(fields: [reportedProfileId], references: [id])
+}
+
+model Suspension {
+  id                    String   @id @default(uuid())
+  userId                String
+  createdByAdminUserId  String
+  reason                String
+  startsAt              DateTime
+  endsAt                DateTime
+  status                String   @default("active")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  reversedAt            DateTime?
+  reversedByAdminUserId String?
+
+  user                  User     @relation(fields: [userId], references: [id])
+  createdByAdmin        User     @relation("AdminSuspensionsCreated", fields: [createdByAdminUserId], references: [id])
+}
+
+model AdminAuditLog {
+  id                  String   @id @default(uuid())
+  adminUserId         String
+  targetUserId        String?
+  targetEntityType    String
+  targetEntityId      String
+  actionType          String
+  actionReason        String?
+  previousState       Json?
+  newState            Json?
+  undoStatus          String   @default("not_applicable")
+  createdAt           DateTime @default(now())
+  undoneAt            DateTime?
+  undoneByAdminUserId String?
+
+  admin               User     @relation("AdminAuditLogs", fields: [adminUserId], references: [id])
+}
+
+model ProfileActivity {
+  id                String   @id @default(uuid())
+  profileId         String
+  actorUserId       String?
+  activityType      String
+  relatedEntityType String?
+  relatedEntityId   String?
+  metadata          Json     @default("{}")
+  createdAt         DateTime @default(now())
+
+  profile           Profile  @relation(fields: [profileId], references: [id])
+  actor             User?    @relation("ProfileActivityActor", fields: [actorUserId], references: [id])
+}

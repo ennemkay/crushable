@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "plans": {
+    "free": {
+      "label": "Free",
+      "limits": {
+        "activeProfileLinks": 5,
+        "submitCrushPerMonth": 1,
+        "contactProfilePerDay": 1,
+        "searchCrushesPerMonth": 0,
+        "viewCrushDetails": false
+      }
+    },
+    "paid": {
+      "label": "Paid",
+      "limits": {
+        "activeProfileLinks": 20,
+        "submitCrushPerMonth": null,
+        "contactProfilePerDay": 10,
+        "searchCrushesPerMonth": null,
+        "viewCrushDetails": true
+      }
+    }
+  }
+}
