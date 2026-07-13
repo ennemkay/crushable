@@ -129,6 +129,8 @@ Profile ZIP codes use the maintained `validator.js` U.S. postal-code rule on
 the server, with a numeric mobile-keyboard hint in the form.
 Core ZIP, profile-completion, and profile-description policy behavior is covered
 by framework-independent unit tests.
+Name/location normalization, crush identity and duplicate logic, plan
+entitlements, and contact-access gates are covered by unit tests.
 ```
 
 Still open:

@@ -101,9 +101,9 @@ APPLICATION FLOW
  | Profile completion [DONE, TESTED]                                            |
  | Description contact policy [DONE, TESTED]                                    |
  | U.S. ZIP validation [DONE, TESTED]                                            |
- | Normalization [DONE, TESTS NEXT]                                              |
- | Crush duplicate logic [DONE, TESTS NEXT]                                     |
- | Entitlements/contact access [DONE, TESTS NEXT]                               |
+ | Normalization [DONE, TESTED]                                                  |
+ | Crush duplicate logic [DONE, TESTED]                                         |
+ | Entitlements/contact access [DONE, TESTED]                                   |
  +-----------------------------------+------------------------------------------+
                                      |
                                      v
