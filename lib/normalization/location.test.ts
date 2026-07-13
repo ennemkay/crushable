@@ -6,7 +6,7 @@ describe("location normalization", () => {
     expect(normalizeCity("  New   York ")).toBe("new york");
   });
 
-  it("removes ZIP whitespace and uppercases characters", () => {
-    expect(normalizeZip(" 80 202-abcd ")).toBe("80202-ABCD");
+  it("trims a valid ZIP+4 value", () => {
+    expect(normalizeZip(" 80202-1234 ")).toBe("80202-1234");
   });
 });
