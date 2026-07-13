@@ -2,12 +2,12 @@
 
 import { AgeDecade, Sex } from "@prisma/client";
 import { redirect } from "next/navigation";
-import isPostalCode from "validator/lib/isPostalCode";
 import { z } from "zod";
 import { requireCurrentUser } from "@/lib/auth/session";
 import { getProfileCompletionIssues } from "@/lib/profiles/completion";
 import { upsertProfileForUser } from "@/lib/profiles/repository";
 import { upsertUserByEmail } from "@/lib/users/repository";
+import { isValidUsZipCode } from "@/lib/validation/us-postal-code";
 
 export type ProfileFormState = {
   issues: string[];
@@ -37,7 +37,7 @@ const onboardingSchema = z.object({
     .string()
     .trim()
     .min(1, "ZIP code is required.")
-    .refine((value) => isPostalCode(value, "US"), "Enter a valid U.S. ZIP code."),
+    .refine(isValidUsZipCode, "Enter a valid U.S. ZIP code."),
   ageDecade: z.nativeEnum(AgeDecade),
   sex: z.nativeEnum(Sex),
   photoCount: z.coerce.number().int().min(0).max(20),

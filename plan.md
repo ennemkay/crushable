@@ -135,6 +135,18 @@ dependencies, and infrastructure only when a current requirement needs them.
 Choose the smallest solution that satisfies the requirement cleanly and leaves
 a reasonable path for later change.
 
+Keep UI components thin. Put reusable validation, normalization, product rules,
+workflow decisions, and provider-independent behavior behind focused library or
+application interfaces rather than one-off logic in pages and components. UI
+code should primarily render state, collect input, and call those interfaces.
+
+Design core logic for unit testing without React, Next.js, a browser, or a live
+database wherever those dependencies are not intrinsic to the behavior. Use
+integration tests for repositories and external boundaries, UI tests for UI
+responsibilities, and a small end-to-end suite for critical cross-layer flows.
+Document every unavoidable manual UI test with exact steps and expected results
+in `docs/testing-strategy.md`.
+
 Modules to keep separate:
 
 ```text
