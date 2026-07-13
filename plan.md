@@ -72,6 +72,8 @@ stack.md
 deployment.md
 software-architecture.md
 data-model.md
+docs/application-flow.md
+docs/testing-strategy.md
 ```
 
 These docs split technology choices, deployment, software architecture, and data

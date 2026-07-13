@@ -127,6 +127,8 @@ Age decade and sex selections are preserved when server validation returns the
 form with errors.
 Profile ZIP codes use the maintained `validator.js` U.S. postal-code rule on
 the server, with a numeric mobile-keyboard hint in the form.
+Core ZIP, profile-completion, and profile-description policy behavior is covered
+by framework-independent unit tests.
 ```
 
 Still open:

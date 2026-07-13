@@ -1,4 +1,5 @@
 import { isProfileDescriptionAllowed } from "@/lib/validation/profile";
+import { isValidUsZipCode } from "@/lib/validation/us-postal-code";
 
 export type ProfileCompletionInput = {
   photoCount: number;
@@ -22,7 +23,11 @@ export function getProfileCompletionIssues(profile: ProfileCompletionInput) {
   if (!isProfileDescriptionAllowed(profile.description)) {
     issues.push("Description cannot include direct contact info or social handles.");
   }
-  if (!profile.zipCode.trim()) issues.push("ZIP code is required.");
+  if (!profile.zipCode.trim()) {
+    issues.push("ZIP code is required.");
+  } else if (!isValidUsZipCode(profile.zipCode)) {
+    issues.push("Enter a valid U.S. ZIP code.");
+  }
   if (!profile.ageDecade) issues.push("Age decade is required.");
   if (!profile.sex) issues.push("Sex is required.");
   if (!profile.emailAddress.trim()) issues.push("Email address is required.");
