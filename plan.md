@@ -211,6 +211,24 @@ Auth:
 These choices are provisional. Provider-specific code should live in adapters so
 Stripe, Postmark, Prisma, or the auth provider can be replaced with less churn.
 
+Better Auth migration sequence:
+
+```text
+1. Install Better Auth and its Prisma adapter without changing the UI.
+2. Generate and review the Better Auth schema alongside the existing Prisma schema.
+3. Decide which existing User fields map directly and which remain Crushable-owned.
+4. Plan migration/backfill for users that already exist in development data.
+5. Configure passwordless magic links with hashed, expiring, single-use tokens.
+6. Replace the development cookie and custom auth repositories behind lib/auth.
+7. Verify server-side session lookup, logout/revocation, and protected routes.
+8. Run unit, integration, and manual browser checks against the isolated test setup.
+9. Remove temporary custom auth behavior only after the replacement passes review.
+10. Add password, third-party login, and 2FA only as separately scoped features.
+```
+
+Do not deploy or introduce production auth credentials until this migration,
+schema review, and environment-isolation release blocker are complete.
+
 Reusable component direction:
 
 ```text
