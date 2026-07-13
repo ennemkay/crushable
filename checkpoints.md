@@ -125,6 +125,8 @@ Submitted photo count is persisted as placeholder ProfilePhoto metadata rows
 until the real image storage decision is made.
 Age decade and sex selections are preserved when server validation returns the
 form with errors.
+Profile ZIP codes use the maintained `validator.js` U.S. postal-code rule on
+the server, with a numeric mobile-keyboard hint in the form.
 ```
 
 Still open:

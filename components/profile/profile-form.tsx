@@ -65,7 +65,13 @@ export function ProfileForm({ defaultEmail, defaults = {}, mode }: ProfileFormPr
         <Field label="Email address" name="emailAddress" type="email" defaultValue={values.emailAddress ?? defaultEmail} />
         <Field label="Username" name="username" defaultValue={values.username} placeholder="janedoe" />
         <Field label="Display name" name="displayName" defaultValue={values.displayName} placeholder="Jane" />
-        <Field label="ZIP code" name="zipCode" defaultValue={values.zipCode} placeholder="80202" />
+        <Field
+          label="ZIP code"
+          name="zipCode"
+          defaultValue={values.zipCode}
+          placeholder="80202"
+          inputMode="numeric"
+        />
         <Field label="Photo count" name="photoCount" type="number" min="0" max="20" defaultValue={values.photoCount ?? "3"} />
         <SelectField label="Age decade" name="ageDecade" options={ageDecades} defaultValue={values.ageDecade} />
         <SelectField label="Sex" name="sex" options={sexes} defaultValue={values.sex} />
@@ -104,11 +110,21 @@ type FieldProps = {
   type?: string;
   min?: string;
   max?: string;
+  inputMode?: "numeric";
   defaultValue?: string;
   placeholder?: string;
 };
 
-function Field({ label, name, type = "text", defaultValue, placeholder, min, max }: FieldProps) {
+function Field({
+  label,
+  name,
+  type = "text",
+  defaultValue,
+  placeholder,
+  min,
+  max,
+  inputMode,
+}: FieldProps) {
   return (
     <div className="grid gap-2">
       <label className="text-sm font-bold text-ink" htmlFor={name}>
@@ -120,6 +136,7 @@ function Field({ label, name, type = "text", defaultValue, placeholder, min, max
         type={type}
         min={min}
         max={max}
+        inputMode={inputMode}
         required
         defaultValue={defaultValue}
         placeholder={placeholder}

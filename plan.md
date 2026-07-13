@@ -12,6 +12,18 @@ Crushable is a new Docker-deployed web app in:
 
 The user chose to build the app with a JavaScript/TypeScript stack instead of a Python backend.
 
+Crushable is a U.S.-only product. Product and implementation decisions may
+assume American conventions, including U.S. ZIP codes, phone-number formats,
+addresses, currency, and applicable location terminology unless a requirement
+explicitly says otherwise.
+
+Validation should use maintained libraries instead of custom regular
+expressions when a suitable validator exists. Keep Zod as the schema and type
+boundary, compose it with `validator.js` for common locale-aware string formats,
+and use a libphonenumber-based package if phone-number fields are introduced.
+Custom validation remains appropriate for Crushable-specific business and
+content rules.
+
 Current intended stack:
 
 ```text
@@ -109,6 +121,19 @@ Docker shape is described in `deployment.md`.
 Keep the implementation modular even though Next.js is the single app framework.
 Provider-specific systems should be isolated behind internal service interfaces
 instead of being scattered through UI components or domain logic.
+
+Before implementing a common technical capability, check whether a mature,
+well-maintained library already solves it. Prefer established libraries for
+standards-based or broadly reusable concerns when they fit the requirements,
+security needs, maintenance expectations, and bundle/runtime constraints. Avoid
+adding dependencies for trivial behavior or delegating Crushable-specific
+product rules to generic packages. Record the reason when choosing custom code
+over a credible library.
+
+Do not build speculative functionality. Add features, abstractions,
+dependencies, and infrastructure only when a current requirement needs them.
+Choose the smallest solution that satisfies the requirement cleanly and leaves
+a reasonable path for later change.
 
 Modules to keep separate:
 
@@ -1102,6 +1127,11 @@ Let users opt into stricter or looser filters where safe.
 4. Implement the next feature incrementally behind existing module boundaries.
 5. Keep local app control scripts working for start/stop/status/logs.
 6. Run local verification and Docker verification before checkpointing each phase.
+7. When richer immediate form feedback is needed, move reusable Zod schemas to
+   shared validation modules and run the same schemas on the client and server.
+   Keep server validation authoritative, retain native HTML constraints for
+   simple feedback, and avoid duplicating validation rules or adding a form
+   framework before the forms require one.
 
 ## MVP Routes
 

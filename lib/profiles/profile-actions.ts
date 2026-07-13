@@ -2,6 +2,7 @@
 
 import { AgeDecade, Sex } from "@prisma/client";
 import { redirect } from "next/navigation";
+import isPostalCode from "validator/lib/isPostalCode";
 import { z } from "zod";
 import { requireCurrentUser } from "@/lib/auth/session";
 import { getProfileCompletionIssues } from "@/lib/profiles/completion";
@@ -32,7 +33,11 @@ const onboardingSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, "Username can only include letters, numbers, and underscores."),
   displayName: z.string().trim().min(1, "Display name is required.").max(60),
   description: z.string().trim(),
-  zipCode: z.string().trim().min(1, "ZIP code is required.").max(12),
+  zipCode: z
+    .string()
+    .trim()
+    .min(1, "ZIP code is required.")
+    .refine((value) => isPostalCode(value, "US"), "Enter a valid U.S. ZIP code."),
   ageDecade: z.nativeEnum(AgeDecade),
   sex: z.nativeEnum(Sex),
   photoCount: z.coerce.number().int().min(0).max(20),
