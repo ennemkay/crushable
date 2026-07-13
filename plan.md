@@ -201,6 +201,10 @@ Database/ORM:
 Auth:
   Email link sign-in is acceptable.
   Two-factor authentication is desired.
+  Before expanding custom token/session code, evaluate an established auth
+  library. Current candidates are Better Auth and Auth.js; compare magic-link
+  support, session storage, 2FA, Prisma integration, Next.js compatibility,
+  security defaults, and migration cost.
   Auth should be isolated behind an app auth/session module so the provider can
   change later if needed.
 ```
@@ -1162,6 +1166,8 @@ Let users opt into stricter or looser filters where safe.
    database names. Keep credentials and full production connection strings in
    Railway rather than the repository. Run the guard as a Railway pre-deploy
    command before migrations or application startup.
+9. Select and integrate the production authentication library before extending
+   custom email-link token or session behavior beyond temporary scaffolding.
 
 ## MVP Routes
 
