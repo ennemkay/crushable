@@ -22,6 +22,36 @@ production  → crushable_prod
 Production credentials and the complete production connection string belong in
 Railway-managed environment variables, not in this repository.
 
+## Crushable domain records
+
+The database is not just a generic key-value store. These relationships and
+lifecycle rules are part of the product behavior:
+
+```text
+User
+ ├─ AuthSession             persisted session state
+ ├─ EmailLinkToken          short-lived sign-in token hash and purpose
+ └─ Profile                 at most one current profile per user
+     └─ ProfilePhoto        ordered image metadata for that profile
+```
+
+- A `User` can exist before profile completion.
+- A profile becomes active only after all completion rules pass.
+- Profile email is stored for account/profile workflows but is never public.
+- Email-link tokens and session values are stored as hashes, not reusable raw
+  credentials.
+- Updating a profile replaces the current placeholder photo metadata inside the
+  same transaction until real image storage is implemented.
+- Profile completion and visibility are separate concepts; moderation and
+  visibility state must not be silently inferred from form rendering.
+- Future crush, link, contact, billing, moderation, audit, and activity records
+  must retain explicit ownership and lifecycle state rather than being hidden
+  in UI-only state.
+
+The Prisma schema and repositories are the implementation boundary for these
+rules. Pages and components should call application actions or services instead
+of constructing persistence records directly.
+
 ## Schema migrations
 
 The checked-in Prisma migrations are the source of truth for schema history.
