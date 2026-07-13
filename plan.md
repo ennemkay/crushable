@@ -199,12 +199,11 @@ Database/ORM:
   generated TypeScript database client, and migrations.
 
 Auth:
-  Email link sign-in is acceptable.
+  Better Auth is the selected auth library direction.
+  Start with passwordless email-link sign-in.
+  Keep password login, third-party OAuth providers, and email OTP available as
+  future options within the same auth system.
   Two-factor authentication is desired.
-  Before expanding custom token/session code, evaluate an established auth
-  library. Current candidates are Better Auth and Auth.js; compare magic-link
-  support, session storage, 2FA, Prisma integration, Next.js compatibility,
-  security defaults, and migration cost.
   Auth should be isolated behind an app auth/session module so the provider can
   change later if needed.
 ```
@@ -1166,8 +1165,9 @@ Let users opt into stricter or looser filters where safe.
    database names. Keep credentials and full production connection strings in
    Railway rather than the repository. Run the guard as a Railway pre-deploy
    command before migrations or application startup.
-9. Select and integrate the production authentication library before extending
-   custom email-link token or session behavior beyond temporary scaffolding.
+9. Integrate Better Auth before extending custom email-link token or session
+   behavior beyond temporary scaffolding. Verify its Prisma schema migration,
+   custom simple sign-in UI, session lookup, and magic-link flow first.
 
 ## MVP Routes
 
