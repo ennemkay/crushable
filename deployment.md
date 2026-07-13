@@ -43,6 +43,14 @@ npm start
 The production server serves the built Next.js app and handles server-side app
 logic.
 
+Production deployment remains deferred while the app is incomplete. Environment
+isolation is a required release blocker, although it is not an immediate
+development task. Before the first Railway deployment, implement a versioned
+non-secret environment manifest and a fail-closed pre-deploy guard. The guard must reject deployment when
+development/test and production share an environment identifier, application
+hostname, database hostname, or database name. Production secrets and full
+connection strings must remain in Railway-managed environment variables.
+
 ## Environment
 
 Expected environment categories:

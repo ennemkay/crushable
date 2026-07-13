@@ -1153,6 +1153,14 @@ Let users opt into stricter or looser filters where safe.
    Keep server validation authoritative, retain native HTML constraints for
    simple feedback, and avoid duplicating validation rules or adding a form
    framework before the forms require one.
+8. Required release blocker, deferred until deployment work: before any
+   production deployment, add versioned, non-secret environment
+   metadata (YAML is the current preference) and a fail-closed deployment check.
+   The check must confirm that development, test, and production use distinct
+   environment identifiers, application hostnames, database hostnames, and
+   database names. Keep credentials and full production connection strings in
+   Railway rather than the repository. Run the guard as a Railway pre-deploy
+   command before migrations or application startup.
 
 ## MVP Routes
 
