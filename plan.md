@@ -140,6 +140,13 @@ workflow decisions, and provider-independent behavior behind focused library or
 application interfaces rather than one-off logic in pages and components. UI
 code should primarily render state, collect input, and call those interfaces.
 
+The current UI is intentionally simple and provisional. Optimize it for clear,
+testable workflows and easy iteration rather than final production polish. Use
+semantic markup, accessible controls, reusable component boundaries, and
+centralized design tokens so a future production design can replace the visual
+layer without rewriting product or domain behavior. Do not spend time building
+a bespoke design system before the final design requirements exist.
+
 Design core logic for unit testing without React, Next.js, a browser, or a live
 database wherever those dependencies are not intrinsic to the behavior. Use
 integration tests for repositories and external boundaries, UI tests for UI
