@@ -143,6 +143,7 @@ function SelectField({ label, name, options, defaultValue }: SelectFieldProps) {
         {label}
       </label>
       <select
+        key={`${name}-${defaultValue ?? ""}`}
         id={name}
         name={name}
         required

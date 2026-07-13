@@ -123,6 +123,8 @@ Database-unavailable state is shown instead of crashing when Postgres is not run
 The same reusable profile form is used for onboarding and profile settings.
 Submitted photo count is persisted as placeholder ProfilePhoto metadata rows
 until the real image storage decision is made.
+Age decade and sex selections are preserved when server validation returns the
+form with errors.
 ```
 
 Still open:
