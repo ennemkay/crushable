@@ -14,6 +14,7 @@ auth/profile foundations, and system-global plan config.
 - `deployment.md`: Docker/runtime/environment shape.
 - `docs/application-flow.md`: implemented, partial, stubbed, and planned flows.
 - `docs/testing-strategy.md`: automated-test boundaries and manual checks.
+- `docs/database-operations.md`: database environments, migrations, and safety.
 - `software-architecture.md`: software modules, layers, adapters, repositories, and components.
 - `data-model.md`: conceptual data model before the first Prisma schema.
 
