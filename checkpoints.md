@@ -233,5 +233,9 @@ database migration, verification, and safe-change guidance.
 Added docs/react-typescript-tailwind-tutorial.md with an app-specific profile
 form exercise covering JSX, props, TypeScript, Tailwind, accessibility, React
 action state, server validation, and verification.
+Proofread the tutorial against the current profile form, onboarding page, server
+action, validation, and Tailwind configuration. Corrected ambiguous wording and
+consolidated the older root-level tutorial into a pointer to the maintained
+document under `docs/`.
 Linked both guides from README.md.
 ```

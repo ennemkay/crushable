@@ -24,6 +24,20 @@ Postgres
 Prisma
 ```
 
+Deployment account and domain:
+
+```text
+Railway account/workspace: steadfast-tranquility
+Production domain: crushable.me
+Domain registrar and DNS provider: Epik
+```
+
+The app is still under development and is not ready for production deployment.
+Do not deploy it or change DNS yet. After the app is complete and has passed its
+release checks, deploy the GitHub repository through Railway, attach
+`crushable.me` as the custom domain, and add Railway's required DNS records in
+Epik.
+
 The current project still contains an early static placeholder scaffold:
 
 ```text

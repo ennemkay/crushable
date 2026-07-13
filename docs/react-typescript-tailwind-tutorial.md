@@ -17,7 +17,7 @@ The file starts with:
 "use client";
 ```
 
-That declares a client component. This form needs browser-side React behavior
+That declares a Client Component. This form needs browser-side React behavior
 because `useActionState` tracks submission results and whether a submission is
 pending.
 
@@ -63,8 +63,9 @@ The paragraph uses two utility classes:
 - `text-sm` makes the font smaller than normal body text.
 - `text-muted` uses the project's muted text color.
 
-`text-muted` is not a built-in color accident. Open `tailwind.config.ts` and
-find `theme.extend.colors`. That configuration gives the app a shared visual
+`text-muted` is not a built-in Tailwind color. It is a project-specific,
+semantic color token. Open `tailwind.config.ts` and find
+`theme.extend.colors`. That configuration gives the app a shared visual
 vocabulary. If the muted color changes there, every `text-muted` use changes.
 
 Try changing `text-sm` to `text-base`, save, and inspect both versions in the
@@ -171,7 +172,8 @@ exports on the server. The action:
 
 Notice the contract between HTML and TypeScript: the textarea's
 `name="description"` must match `formData.get("description")`. Renaming one
-without the other silently breaks the flow.
+without the other breaks the form-data contract and causes validation to
+receive an empty value.
 
 The direct-contact patterns live in `lib/validation/profile.ts`. Keeping that
 rule outside the component lets every entry point enforce the same policy.
@@ -193,7 +195,7 @@ npm run lint
 npm run build
 ```
 
-Lint checks code-quality and React rules. Build runs Prisma generation,
+Lint checks code quality and React rules. Build runs Prisma generation,
 TypeScript checking, and the production Next.js build. Both should pass before
 the change is considered finished.
 
